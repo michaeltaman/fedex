@@ -7,6 +7,7 @@ import { generateToken } from '../utils.js';
 
 const userRouter = express.Router();
 
+//http://localhost:5000/api/users/seed
 userRouter.get(
   '/seed',
   expressAsyncHandler(async (req, res) => {
