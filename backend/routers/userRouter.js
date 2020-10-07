@@ -7,7 +7,7 @@ import { getToken, isAuth, isAdmin } from '../utils.js';
 
 const userRouter = express.Router();
 
-//http://localhost:5000/api/users/seed
+//http://localhost:5000/api/users/seed - create first users from the data - file
 userRouter.get(
   '/seed',
   expressAsyncHandler(async (req, res) => {
@@ -27,7 +27,7 @@ userRouter.post(
           _id: signinUser._id,
           name: signinUser.name,
           email: signinUser.email,
-          isAdmin: signinUser.isAdmin,
+          role: signinUser.role,
           token: getToken(signinUser),
         });
         return;
@@ -41,7 +41,7 @@ userRouter.post('/register', async (req, res) => {
   const user = new User({
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password,
+    password: bcrypt.hashSync(req.body.password),
   });
   const newUser = await user.save();
   if (newUser) {
@@ -49,7 +49,7 @@ userRouter.post('/register', async (req, res) => {
       _id: newUser.id,
       name: newUser.name,
       email: newUser.email,
-      isAdmin: newUser.isAdmin,
+      role: newUser.role,
       token: getToken(newUser),
     });
   } else {
@@ -59,16 +59,9 @@ userRouter.post('/register', async (req, res) => {
 
 userRouter.get('/createadmin', async (req, res) => {
   try {
-    /*const user = new User({
-      name: 'Michael',
-      email: 'mictr@gmail.com',
-      password: bcrypt.hashSync('1234', 8), 
-      isAdmin: true,
-    });*/
-
     const user = new User({
       name: 'Arcady',
-      email: 'admin2@example.com',
+      email: 'admin-2@example.com',
       password: bcrypt.hashSync('1234', 8), 
       isAdmin: true,
     });
@@ -82,17 +75,19 @@ userRouter.get('/createadmin', async (req, res) => {
 
 userRouter.put('/:id', isAuth, isAdmin, async (req, res) => {
   const userId = req.params.id;
-  const user = await User.findById(userId);
+  const user = await User.findById(userId); // verify the user id  !!!
   if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
-    user.password = req.body.password || user.password;
+    user.password = bcrypt.hashSync(req.body.password,8) || user.password;    //bcrypt.hashSync('1234', 8),
+    user.role = req.body.role || user.role;
     const updatedUser = await user.save();
     res.send({
       _id: updatedUser.id,
       name: updatedUser.name,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      role: updatedUser.role,  
       token: getToken(updatedUser),
     });
   } else {
