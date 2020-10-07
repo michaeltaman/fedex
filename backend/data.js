@@ -81,6 +81,16 @@ const data = {
       phoneNumber: '0586203124',
       vehicleType: 'track',
     }
+  ],
+  deliveries: [
+    {
+      description: 'Delivery-1',
+      shippingCost: 30,
+    },
+    {
+      description: 'Delivery-2',
+      shippingCost: 80,
+    }
   ]
 };
 export default data;

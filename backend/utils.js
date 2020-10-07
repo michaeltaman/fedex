@@ -1,19 +1,42 @@
 import jwt from 'jsonwebtoken';
 import config from './config.js';
 const getToken = (user) => {
-  return jwt.sign({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    isAdmin: user.isAdmin,
-    role: user.role,
-  }, config.JWT_SECRET,
-  {
-    expiresIn: '30d',
-  })
-}
+  return jwt.sign(
+    {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      role: user.role,
+    },
+    config.JWT_SECRET,
+    {
+      expiresIn: '30d',
+    },
+  );
+};
 
 const isAuth = (req, res, next) => {
+  return isPermited(req, res, next);
+};
+
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    return next();
+  }
+  return res.status(401).send({ msg: 'Admin Token is not valid.' });
+};
+
+const isSender = (req, res, next) => {
+  return isPermited(req, res, next,'sender');
+};
+
+
+const isCourier = (req, res, next) => {
+  return isPermited(req, res, next,'courier');  
+};
+
+const isPermited = (req, res, next, role = '') => {
   const token = req.headers.authorization;
 
   if (token) {
@@ -23,38 +46,13 @@ const isAuth = (req, res, next) => {
         return res.status(401).send({ msg: 'Invalid Token' });
       }
       req.user = decode;
-      next();
-      return
+      if ( req.user && role === '' || req.user && req.user.role === role) {
+        return next();
+      }
     });
   } else {
-    return res.status(401).send({ msg: "Token is not supplied." });
+    return res.status(401).send({ msg: 'Token is not supplied.' });
   }
 }
 
-const isAdmin = (req, res, next) => {
-  if (req.user && req.user.isAdmin) {
-    return next();
-  }
-  return res.status(401).send({ msg: 'Admin Token is not valid.' })
-}
-
-const isSender = (req, res, next) => {
-  console.log(req.user.isSender)
-  if (req.user && req.user.role === 'sender') {
-    return next();
-  }
-  return res.status(401).send({ msg: 'Sender Token is not valid.' })
-}
-
-const isCourier = (req, res, next) => {
-  console.log(req.user.isSender)
-  if (req.user && req.user.role === 'courier') {
-    return next();
-  }
-  return res.status(401).send({ msg: 'Courier Token is not valid.' })
-}
-
-
-export {
-  getToken, isAuth, isAdmin, isSender, isCourier
-}
+export { getToken, isAuth, isAdmin, isSender, isCourier };

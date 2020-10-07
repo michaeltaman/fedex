@@ -1,16 +1,21 @@
 import mongoose from 'mongoose';
 
-const deliveryPackageSchema = new mongoose.Schema({
-  description: { type: String, required: true },
+/*
+const deliveryItemsSchema = new mongoose.Schema({
   package: { type: mongoose.Schema.Types.ObjectId, ref: 'Package', required: true },
-});
+  name: {type: String},
+  size: {type: String},
+  cost: {type: Number},
+});*/
 
 const deliverySchema = new mongoose.Schema(
   {
-    sender: { type: mongoose.Schema.Types.ObjectId, ref: 'Sender', required: true },
-    courier: { type: mongoose.Schema.Types.ObjectId, ref: 'Courier', required: true },
-    deliveryPackage: [deliveryPackageSchema],
-    deliveryAt: { type: Date },
+    description: { type: String },
+    shippingCost: { type: Number},
+    // sender: { type: mongoose.Schema.Types.ObjectId, ref: 'Sender' },
+    // courier: { type: mongoose.Schema.Types.ObjectId, ref: 'Courier' },
+    //deliveryItems: [deliveryItemsSchema],
+    //deliveryAt: { type: Date },
   },
   {
     timestamps: true,
