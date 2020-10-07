@@ -86,10 +86,56 @@ const data = {
     {
       description: 'Delivery-1',
       shippingCost: 30,
+      sender: bson(bson.BsonNull), 
+      courier: bson(bson.BsonNull),
+      deliveryItems: [
+        {
+          name: "Package-1",
+          size: "small",
+          cost: 120,
+          packageId: bson('5f7dbcfd0fa65f0ed88df368'),
+        },
+        {
+          name: "Package-2",
+          size: "small",
+          cost: 170,
+          packageId: bson('5f7dbcfd0fa65f0ed88df369'),
+        },
+        {
+          name: "Package-3",
+          size: "middle",
+          cost: 220,
+          packageId: bson('5f7dbcfd0fa65f0ed88df36a'),
+        },
+        {
+          name: "Package-6",
+          size: "middle",
+          cost: 250,
+          packageId: bson('5f7dbcfd0fa65f0ed88df36d'),
+        }
+      ],
+      deliveryAt: "10/02/2020"
     },
     {
       description: 'Delivery-2',
       shippingCost: 80,
+      sender: bson(bson.BsonNull), 
+      courier: bson(bson.BsonNull),
+      deliveryItems: [
+        {       
+          name: "Package-4",
+          size: "big",
+          cost: 410,
+          packageId: bson('5f7dbcfd0fa65f0ed88df36b'),
+        },
+        {
+          name: "Package-5",
+          size: "small",
+          cost: 380,
+          packageId: bson('5f7dbcfd0fa65f0ed88df36c'),
+        },
+      ],
+      deliveryAt: "10/04/2020",
     }
   ]
 };

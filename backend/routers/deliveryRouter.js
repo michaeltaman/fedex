@@ -10,7 +10,7 @@ deliveryRouter.get(
     '/seed',
     isSender,
     expressAsyncHandler(async (req, res) => {
-      await Delivery.remove({}); //because using of ObjectId reference
+      await Delivery.deleteMany({}); //because using of ObjectId reference
       const createdDeliveries = await Delivery.insertMany(data.deliveries);
       res.send({ createdDeliveries });
     })
