@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import config from './config.js';
 import bodyParser from 'body-parser';
 import userRouter from './routers/userRouter.js';
+import packageRouter from './routers/packageRouter.js';
 import deliveryRouter from './routers/deliveryRouter.js'
 
 
@@ -18,7 +19,8 @@ mongoose.connect(config.MONGODB_URL , {
 });
 
 app.use('/api/users', userRouter);
-app.use('api/delivery', deliveryRouter);
+app.use('/api/packages', packageRouter);
+app.use('api/deliveries', deliveryRouter);
 app.get('/', (req, res) => {
   res.send('Server is ready');
 });

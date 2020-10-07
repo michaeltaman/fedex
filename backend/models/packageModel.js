@@ -1,12 +1,16 @@
 import mongoose from 'mongoose';
 
+const packageSchema = new mongoose.Schema(
+  {
+    name: { type: String, uniquie: true },
+    size: { type: String }, 
+    cost: { type: Number },
+  },
+  {
+    tymestamps: true,
+  },
+);
 
-const packageSchema = new mongoose.Schema({
-  size: { type: String, required: true },
-  cost: { type: Number, required: true },
-  shippingCost: { type: Number, required: true },
-});
-
-const packageModel = mongoose.model("Package", packageSchema);
+const packageModel = mongoose.model('Package', packageSchema);
 
 export default packageModel;

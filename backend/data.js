@@ -33,5 +33,37 @@ const data = {
       role: 'customer',
     },
   ],
+  packages: [
+    {
+      name: 'Package-1',
+      size: 'small',
+      cost: 120,
+    },
+    {
+      name: 'Package-2',
+      size: 'small',
+      cost: 170,
+    },
+    {
+      name: 'Package-3',
+      size: 'middle',
+      cost: 220,
+    },
+    {
+      name: 'Package-4',
+      size: 'big',
+      cost: 410,
+    },
+    {
+      name: 'Package-5',
+      size: 'big',
+      cost: 380,
+    },
+    {
+      name: 'Package-6',
+      size: 'middle',
+      cost: 250,
+    },
+  ]
 };
 export default data;
