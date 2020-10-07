@@ -1,22 +1,24 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-
+import config from './config.js';
+import bodyParser from 'body-parser';
 import userRouter from './routers/userRouter.js';
+import deliveryRouter from './routers/deliveryRouter.js'
 
-dotenv.config();
 
 const app = express();
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/fedex', {
+mongoose.connect(config.MONGODB_URL , {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
 });
 
 app.use('/api/users', userRouter);
+app.use('api/delivery', deliveryRouter);
 app.get('/', (req, res) => {
   res.send('Server is ready');
 });
