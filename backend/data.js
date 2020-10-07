@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import bson from 'bson-objectid';
 
 const data = {
   users: [
@@ -64,6 +65,22 @@ const data = {
       size: 'middle',
       cost: 250,
     },
+  ],
+  couriers: [
+    {
+      user: bson('5f7db65a71921a2a2874efc1'),
+      firstName: 'John',
+      lastName: 'Brown',
+      phoneNumber: '053745567',
+      vehicleType: 'sedan',
+    },
+    {
+      user: bson('5f7db65a71921a2a2874efc2'),
+      firstName: 'Pitter',
+      lastName: 'Pan',
+      phoneNumber: '0586203124',
+      vehicleType: 'track',
+    }
   ]
 };
 export default data;
