@@ -86,8 +86,8 @@ const data = {
     {
       description: 'Delivery-1',
       shippingCost: 30,
-      sender: bson(bson.BsonNull), 
-      courier: bson(bson.BsonNull),
+      sender: {},  
+      courier: {},
       deliveryItems: [
         {
           name: "Package-1",
@@ -119,8 +119,8 @@ const data = {
     {
       description: 'Delivery-2',
       shippingCost: 80,
-      sender: bson(bson.BsonNull), 
-      courier: bson(bson.BsonNull),
+      sender: {},  
+      courier: {},
       deliveryItems: [
         {       
           name: "Package-4",
