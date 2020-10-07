@@ -12,8 +12,8 @@ courierRouter.get(
      isAdmin,
     expressAsyncHandler(async (req, res) => {
       await Courier.deleteMany({}); //because using of ObjectId reference
-      const createdUsers = await Courier.insertMany(data.couriers);
-      res.send({ createdUsers });
+      const createdCouriers = await Courier.insertMany(data.couriers);
+      res.send({ createdCouriers });
     })
   );
   

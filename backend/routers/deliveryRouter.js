@@ -1,24 +1,20 @@
 import express from 'express';
-// import Order from '../models/deliveryModel.js';
-// import { isAuth } from '../util';
+import expressAsyncHandler from 'express-async-handler';
+import data from '../data.js';
+import Delivery from '../models/deliveryModel.js';
+import { isSender } from '../utils.js';
 
 const deliveryRouter = express.Router();
 
-/*
-deliveryRouter.post('/', isAuth, async (req, res) => {
-    const newOrder = new Order({
-      orderItems: req.body.orderItems,
-      user: req.user._id,
-      shipping: req.body.shipping,
-      payment: req.body.payment,
-      itemsPrice: req.body.itemsPrice,
-      taxPrice: req.body.taxPrice,
-      shippingPrice: req.body.shippingPrice,
-      totalPrice: req.body.totalPrice,
-    });
-  
-    const newOrderCreated = await newOrder.save();
-    res.status(201).send({ message: 'New Order Created', data: newOrderCreated });
-  });*/
+deliveryRouter.get(
+    '/seed',
+    isSender,
+    expressAsyncHandler(async (req, res) => {
+      await Delivery.remove({}); //because using of ObjectId reference
+      const createdDeliveries = await Delivery.insertMany(data.deliveries);
+      res.send({ createdDeliveries });
+    })
+  );
 
-  export default deliveryRouter;
+
+export default deliveryRouter;

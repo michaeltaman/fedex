@@ -22,14 +22,14 @@ mongoose.connect(config.MONGODB_URL , {
 app.use('/api/users', userRouter);
 app.use('/api/packages', packageRouter);
 app.use('/api/couriers', courierRouter);
-app.use('api/deliveries', deliveryRouter);
+app.use('/api/deliveries', deliveryRouter);
 app.get('/', (req, res) => {
   res.send('Server is ready');
 });
 
-app.use((err, req, res) => {
-  res.status(500).send({ message: err.message });
-});
+// app.use((err, req, res) => {
+//   res.status(500).send({ message: err.message });
+// });
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
