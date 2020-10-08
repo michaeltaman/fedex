@@ -114,7 +114,6 @@ const data = {
           packageId: bson('5f7dbcfd0fa65f0ed88df36d'),
         }
       ],
-      deliveryAt: "10/02/2020"
     },
     {
       description: 'Delivery-2',
@@ -135,8 +134,7 @@ const data = {
           packageId: bson('5f7dbcfd0fa65f0ed88df36c'),
         },
       ],
-      deliveryAt: "10/04/2020",
-    }
+    },
   ]
 };
 export default data;

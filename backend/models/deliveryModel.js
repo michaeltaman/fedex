@@ -30,7 +30,7 @@ const deliverySchema = new mongoose.Schema(
     sender:  [ deliverySender ],
     courier: [ deliveryCourier ],
     deliveryItems: [deliveryItemsSchema],
-    deliveryAt: { type: Date },
+    assignedAt: { type: String },
   },
   {
     timestamps: true,
