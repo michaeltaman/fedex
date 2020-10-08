@@ -8,7 +8,7 @@ import data1 from '../data-1.js';
 
 import Delivery from '../models/deliveryModel.js';
 import Courier from '../models/courierModel.js';
-import { isSender, isCourier } from '../utils.js';
+import { isSender, isCourier, isAdmin } from '../utils.js';
 
 const deliveryRouter = express.Router();
 
@@ -43,7 +43,7 @@ deliveryRouter.get(
 );
 
 
-deliveryRouter.get('/mine', isSender, async (req, res) => {
+deliveryRouter.get('/all', isAdmin, async (req, res) => {
   const deliveries = await Delivery.find({});
   if (deliveries) {
     res.send(deliveries);
@@ -58,7 +58,7 @@ deliveryRouter.get('/sender', isSender, async (req, res) => {
     if (moment(query.date, 'DD/MM/YYYY', true).isValid()) {
       const deliveries = await Delivery.find({ senderId: req.user._id, assignedAt: query.date });
       if (deliveries) {
-        res.send({message: 'Your assigned deliveries as of date: ' + `${query.date}` , deliveries});
+        res.send({message: `Your assigned deliveries as of date: ${query.date}` , deliveries});
       }
     } else {
       res.status(404).send({ message: 'The date parameter is not formed correctly' });
