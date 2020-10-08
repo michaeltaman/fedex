@@ -12,13 +12,13 @@ const deliveryCourier = new mongoose.Schema({
   name: {type: String},
   phoneNumber: { type: String},
   vehicleType: { type: String},
-  courierId: { type: mongoose.Schema.Types.ObjectId, ref: 'Courier'},
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Courier'},
 });
 
 const deliverySender = new mongoose.Schema({
   name: {type: String},
   email: {type: String},
-  senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Sender'},
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Sender'},
 });
 
 const deliverySchema = new mongoose.Schema(
