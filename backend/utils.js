@@ -26,8 +26,8 @@ const isAuth = (req, res, next) => {
         return res.status(401).send({ msg: 'Invalid Token' });
       }
       req.user = decode;
-      return next();
-
+      next();
+      return;
     });
   } else {
     return res.status(401).send({ msg: 'Token is not supplied.' });
@@ -44,12 +44,16 @@ const isAdmin = (req, res, next) => {
         return res.status(401).send({ msg: 'Invalid Token' });
       }
       req.user = decode;
-      if (req.user && req.user.isAdmin) {
+      if (req.user && req.user.isAdmin) {  
         next();
+        return ;
+      }
+      else{
+        return res.status(401).send({ msg: 'Admin Token is not valid.' });
       }
     });
   } else {
-    return res.status(401).send({ msg: 'Admin Token is not valid.' });
+    return res.status(401).send({ msg: 'Token is not supplied.' });
   }
 };
 
@@ -73,6 +77,9 @@ const isPermited = (req, res, next, role) => {
       req.user = decode;
       if (req.user && req.user.role === role) {
         return next();
+      }
+      else{
+        return res.status(401).send({ msg: `Token is not valid for ${role}.` });
       }
     });
   } else {
