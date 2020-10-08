@@ -130,7 +130,7 @@ const data = {
         },
         {
           name: "Package-5",
-          size: "small",
+          size: "big",
           cost: 380,
           packageId: bson('5f7dbcfd0fa65f0ed88df36c'),
         },
