@@ -46,6 +46,7 @@ const isAdmin = (req, res, next) => {
       req.user = decode;
       if (req.user && req.user.isAdmin) {
         next();
+        return;
       }
     });
   } else {
