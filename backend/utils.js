@@ -26,8 +26,8 @@ const isAuth = (req, res, next) => {
         return res.status(401).send({ msg: 'Invalid Token' });
       }
       req.user = decode;
-      next();
-      return;
+      return next();
+
     });
   } else {
     return res.status(401).send({ msg: 'Token is not supplied.' });
