@@ -50,9 +50,10 @@ deliveryRouter.get('/mine', isSender, async (req, res) => {
 
 deliveryRouter.post('/:id', isSender, async (req, res) => {
   const delivery = await Delivery.findById(req.params.id);
-  /////console.log("Does Assigned: ", delivery.courierId)
-  if (delivery /*&& !delivery.courierId*/) {
-    //console.log('*** S E N D E R ***', req.user);
+  /////console.log("Does Assigned yet: ", delivery.courierId)
+  
+  // Prevents the same delivery from being assigned more then once 
+  if (delivery && !delivery.courierId) {
 
     delivery.sender = {
       name: req.user.name,
@@ -62,19 +63,14 @@ deliveryRouter.post('/:id', isSender, async (req, res) => {
     delivery.senderId = req.user._id;
 
     const couriers = await Courier.find({});
-    //console.log('*** couriers ***', couriers);
 
     const requiredVehicleType =
       delivery.deliveryItems[0].size === 'small' || delivery.deliveryItems[0].size === 'middle'
         ? 'sedan'
         : 'track';
 
-    //console.log('requiredVehicleType :', requiredVehicleType);
-
     const promises = couriers.map(async (courier) => {
       const courierDeliveries = await Delivery.find({ courierId: courier.id, assignedAt: getCurrentDate() });
-
-      console.log('courierDeliveries: ', courierDeliveries);
 
       if (courierDeliveries.length < 5 && courier.vehicleType === requiredVehicleType) {
         delivery.courier = {
@@ -84,26 +80,18 @@ deliveryRouter.post('/:id', isSender, async (req, res) => {
         };
         delivery.courierId = courier.id;
         delivery.assignedAt = getCurrentDate();
-        //console.log('delivery.courierId :', delivery.courierId);
       }
-
-      //console.log('Chosen courier :', delivery.courier);
-
       return;
     });
 
     await Promise.all(promises);
 
-    //console.log('DELIVERY', delivery);
-
     const assignedDelivery = await delivery.save();
 
-    console.log('$$$$$$$$$$$$$$$$$ ', assignedDelivery);
     const message = assignedDelivery.assignedAt === getCurrentDate() ? 'Courier is assigned for delivery' : 'There are no more deliveries for today'
-    console.log(message);
     res.send({ message, delivery: assignedDelivery });
   } else {
-    res.status(404).send({ message: 'Delivery not found or assigned yet.' });
+    res.status(404).send({ message: 'Delivery not found or assigned yet !!!' });
   }
 });
 
