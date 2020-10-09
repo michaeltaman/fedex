@@ -5,6 +5,7 @@ import moment from 'moment';
 
 import data from '../data.js';
 import data1 from '../data-1.js';
+import data2 from '../data-2.js';
 
 import Delivery from '../models/deliveryModel.js';
 import Courier from '../models/courierModel.js';
@@ -49,6 +50,15 @@ deliveryRouter.get(
   isSender,
   expressAsyncHandler(async (req, res) => {
     const createdDeliveries = await Delivery.insertMany(data1.deliveries);
+    res.send({ createdDeliveries });
+  }),
+);
+
+deliveryRouter.get(
+  '/seed-2',
+  isSender,
+  expressAsyncHandler(async (req, res) => {
+    const createdDeliveries = await Delivery.insertMany(data2.deliveries);
     res.send({ createdDeliveries });
   }),
 );
