@@ -22,6 +22,19 @@ function getCurrentDate() {
   return today;
 }
 
+//--------------------------------
+function convertToISODate(dateString) {  
+  var splitString = dateString.split("/");
+  var day = splitString[0];
+  var month  = splitString[1];
+  var year  = splitString[2];
+ 
+  var today = new Date();
+  today = year + '-' + month + '-' + day + 'T21:00:00.000Z';
+  return new Date(today);
+}
+//--------------------------------
+
 deliveryRouter.get(
   '/seed',
   isSender,
@@ -75,7 +88,10 @@ deliveryRouter.get('/sender', isSender, async (req, res) => {
 
 deliveryRouter.get('/courier', isCourier, async (req, res) => {
   const query = req.query.date? { date: req.query.date } : {};
-  //console.log("courierId: " ,req.user._id)
+
+  console.log("=============================================================");
+  console.log("courier: " ,req.user);
+
   if (moment(query.date, 'DD/MM/YYYY', true).isValid()) {
     const deliveries = await Delivery.find({ courierId: req.user._id, assignedAt: query.date });
     if (deliveries) {
@@ -85,6 +101,41 @@ deliveryRouter.get('/courier', isCourier, async (req, res) => {
     res.status(404).send({ message: 'The date parameter is not formed correctly' });
   }
 });
+
+//---------------------------------------------
+
+/////http://localhost:5000/api/deliveries/revenue/courier?from=05/10/2020&to=08/10/2020
+deliveryRouter.get('/revenue/courier', isCourier, async (req, res) => {
+
+  console.log("=============================================================");
+  console.log("courier: " ,req.user);
+
+  const queryFrom = req.query.from? { date: req.query.from } : {};
+  const queryTo = req.query.to? { date: req.query.to } : {};
+  if (moment(queryFrom.date, 'DD/MM/YYYY', true).isValid() && moment(queryTo.date, 'DD/MM/YYYY', true).isValid()) {
+
+    if(new Date(queryFrom.date) > new Date(queryTo.date)) {
+      res.status(404).send({ message: 'Replace from - to dates parameters. Try again !!!' });
+    }
+  
+    
+    const dateFrom = convertToISODate(queryFrom.date);
+    /////console.log("queryFrom: ", dateFrom);
+    const dateTo = convertToISODate(queryTo.date);
+    /////console.log("queryTo: ", dateTo);
+
+    
+    const deliveries = await Delivery.find({ courierId: req.user._id, assignedAtISO: {"$gte": dateFrom, "$lte": dateTo}});
+    //const deliveries = await Delivery.find({ courierId: req.user._id });
+    if (deliveries) {
+      res.send(deliveries);
+    }
+  } else {
+    res.status(404).send({ message: 'The date parameter is not formed correctly' });
+  }
+});
+
+//-----------------------------------------------------------
 
 deliveryRouter.post('/:id', isSender, async (req, res) => {
   const delivery = await Delivery.findById(req.params.id);
@@ -121,6 +172,7 @@ deliveryRouter.post('/:id', isSender, async (req, res) => {
         };
         delivery.courierId = deliveryCourierId;
         delivery.assignedAt = getCurrentDate();
+        delivery.assignedAtISO = convertToISODate(delivery.assignedAt);
       }
       return;
     });
