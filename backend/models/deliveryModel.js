@@ -31,6 +31,7 @@ const deliverySchema = new mongoose.Schema(
     courier: [ deliveryCourier ],
     deliveryItems: [deliveryItemsSchema],
     assignedAt: { type: String },
+    assignedAtISO: { type: Date },
   },
   {
     timestamps: true,
