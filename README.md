@@ -20,7 +20,7 @@
 
     For a courier, return only the deliveries that are assigned to him.
 
-    Bonus - Support pagination.
+    Bonus - Support pagination. // see https://www.youtube.com/watch?v=ZX3qt0UWifc
 
 ## 5. Create “Assign Delivery” endpoint.
 

@@ -53,11 +53,25 @@ deliveryRouter.get(
   }),
 );
 
-
 deliveryRouter.get('/all', isAdmin, async (req, res) => {
-  const deliveries = await Delivery.find({});
-  if (deliveries) {
-    res.send(deliveries);
+  try {
+    const page = parseInt(req.query.page); // Make sure to parse the limit to number
+    const limit = parseInt(req.query.limit);// Make sure to parse the skip to number
+
+    if(!page || !limit) {
+      res.send('You must surply page & limit parameters');
+    }
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit ;
+
+    const deliveries = await Delivery.find({});
+    if (deliveries) {
+       const resultDeliveries = deliveries.slice(startIndex, endIndex)
+       res.send(resultDeliveries);
+    }
+  } catch(e){
+    return res.status(500).json(e)
   }
 });
 
@@ -104,6 +118,9 @@ deliveryRouter.get('/courier', isCourier, async (req, res) => {
 /////http://localhost:5000/api/deliveries/revenue/courier?from=05/10/2020&to=08/10/2020
 deliveryRouter.get('/revenue/courier', isCourier, async (req, res) => {
 
+  console.log("=============================================================");
+  console.log("courier: " ,req.user);
+
   const queryFrom = req.query.from? { date: req.query.from } : {};
   const queryTo = req.query.to? { date: req.query.to } : {};
   if (moment(queryFrom.date, 'DD/MM/YYYY', true).isValid() && moment(queryTo.date, 'DD/MM/YYYY', true).isValid()) {
@@ -112,20 +129,23 @@ deliveryRouter.get('/revenue/courier', isCourier, async (req, res) => {
       res.status(404).send({ message: 'Replace from - to dates parameters. Try again !!!' });
     }
   
-    const dateFrom = convertToISODate(queryFrom.date);
-    const dateTo = convertToISODate(queryTo.date);
-
-    const deliveries = await Delivery.find({ courierId: req.user._id, assignedAtISO: {"$gte": dateFrom, "$lte": dateTo}});
-
-    const shippingCost = deliveries.reduce((a, c) => a + c.shippingCost, 0);
     
+    const dateFrom = convertToISODate(queryFrom.date);
+    /////console.log("queryFrom: ", dateFrom);
+    const dateTo = convertToISODate(queryTo.date);
+    /////console.log("queryTo: ", dateTo);
+
+    
+    const deliveries = await Delivery.find({ courierId: req.user._id, assignedAtISO: {"$gte": dateFrom, "$lte": dateTo}});
+    //const deliveries = await Delivery.find({ courierId: req.user._id });
     if (deliveries) {
-      res.send({ message: `Revenue of ${req.user.name} for the period  from ${queryFrom.date} up to ${queryTo.date} is: ${shippingCost} NIS`, deliveries});
+      res.send(deliveries);
     }
   } else {
-    res.status(404).send({ message: 'The date parameter must match the format: dd/mm/yyyy' });
+    res.status(404).send({ message: 'The date parameter is not formed correctly' });
   }
 });
+
 
 deliveryRouter.post('/:id', isSender, async (req, res) => {
   const delivery = await Delivery.findById(req.params.id);
