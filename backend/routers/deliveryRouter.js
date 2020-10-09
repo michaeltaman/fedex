@@ -22,7 +22,6 @@ function getCurrentDate() {
   return today;
 }
 
-//--------------------------------
 function convertToISODate(dateString) {  
   var splitString = dateString.split("/");
   var day = splitString[0];
@@ -33,7 +32,6 @@ function convertToISODate(dateString) {
   today = year + '-' + month + '-' + day + 'T21:00:00.000Z';
   return new Date(today);
 }
-//--------------------------------
 
 deliveryRouter.get(
   '/seed',
@@ -102,13 +100,9 @@ deliveryRouter.get('/courier', isCourier, async (req, res) => {
   }
 });
 
-//---------------------------------------------
 
 /////http://localhost:5000/api/deliveries/revenue/courier?from=05/10/2020&to=08/10/2020
 deliveryRouter.get('/revenue/courier', isCourier, async (req, res) => {
-
-  console.log("=============================================================");
-  console.log("courier: " ,req.user);
 
   const queryFrom = req.query.from? { date: req.query.from } : {};
   const queryTo = req.query.to? { date: req.query.to } : {};
@@ -118,24 +112,20 @@ deliveryRouter.get('/revenue/courier', isCourier, async (req, res) => {
       res.status(404).send({ message: 'Replace from - to dates parameters. Try again !!!' });
     }
   
-    
     const dateFrom = convertToISODate(queryFrom.date);
-    /////console.log("queryFrom: ", dateFrom);
     const dateTo = convertToISODate(queryTo.date);
-    /////console.log("queryTo: ", dateTo);
 
-    
     const deliveries = await Delivery.find({ courierId: req.user._id, assignedAtISO: {"$gte": dateFrom, "$lte": dateTo}});
-    //const deliveries = await Delivery.find({ courierId: req.user._id });
+
+    const shippingCost = deliveries.reduce((a, c) => a + c.shippingCost, 0);
+    
     if (deliveries) {
-      res.send(deliveries);
+      res.send({ message: `Revenue of ${req.user.name} for the period  from ${queryFrom.date} up to ${queryTo.date} is: ${shippingCost} NIS`, deliveries});
     }
   } else {
-    res.status(404).send({ message: 'The date parameter is not formed correctly' });
+    res.status(404).send({ message: 'The date parameter must match the format: dd/mm/yyyy' });
   }
 });
-
-//-----------------------------------------------------------
 
 deliveryRouter.post('/:id', isSender, async (req, res) => {
   const delivery = await Delivery.findById(req.params.id);
