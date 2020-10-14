@@ -9,7 +9,7 @@ import data2 from '../data-2.js';
 
 import Delivery from '../models/deliveryModel.js';
 import Courier from '../models/courierModel.js';
-import { isSender, isCourier, isAdmin } from '../utils.js';
+import { isSender, isCourier, isAdmin, isAdminOrCourier } from '../utils.js';
 
 const deliveryRouter = express.Router();
 
@@ -126,9 +126,10 @@ deliveryRouter.get('/courier', isCourier, async (req, res) => {
 
 
 /////http://localhost:5000/api/deliveries/revenue/courier?from=05/10/2020&to=08/10/2020
-deliveryRouter.get('/revenue/courier', isCourier, async (req, res) => {
+deliveryRouter.get('/revenue/courier', isAdminOrCourier, async (req, res) => {
 
-  const queryFrom = req.query.from? { date: req.query.from } : {};
+  res.send({message: 'Authentication barrier overcomed' })
+  /*const queryFrom = req.query.from? { date: req.query.from } : {};
   const queryTo = req.query.to? { date: req.query.to } : {};
   if (moment(queryFrom.date, 'DD/MM/YYYY', true).isValid() && moment(queryTo.date, 'DD/MM/YYYY', true).isValid()) {
 
@@ -148,7 +149,7 @@ deliveryRouter.get('/revenue/courier', isCourier, async (req, res) => {
     }
   } else {
     res.status(404).send({ message: 'The date parameter must match the format: dd/mm/yyyy' });
-  }
+  }*//////
 });
 
 

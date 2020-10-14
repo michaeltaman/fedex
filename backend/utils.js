@@ -57,6 +57,30 @@ const isAdmin = (req, res, next) => {
   }
 };
 
+//------------------------
+const isAdminOrCourier = (req, res, next) => {
+  const token = req.headers.authorization;
+  if (token) {
+    const onlyToken = token.slice(7, token.length);
+    jwt.verify(onlyToken, config.JWT_SECRET, (err, decode) => {
+      if (err) {
+        return res.status(401).send({ msg: 'Invalid Token' });
+      }
+      req.user = decode;
+      if (req.user && req.user.isAdmin || isPermited(req, res, next, 'sender')) {  
+        next();
+        return ;
+      }
+      else{
+        return res.status(401).send({ msg: 'Admin Token is not valid.' });
+      }
+    });
+  } else {
+    return res.status(401).send({ msg: 'Token is not supplied.' });
+  }
+}
+//---------------------------
+
 const isSender = (req, res, next) => {
   return isPermited(req, res, next, 'sender');
 };
@@ -87,4 +111,4 @@ const isPermited = (req, res, next, role) => {
   }
 };
 
-export { getToken, isAuth, isAdmin, isSender, isCourier };
+export { getToken, isAuth, isAdmin, isSender, isCourier, isAdminOrCourier };
